@@ -1,5 +1,6 @@
 from flask import Flask,render_template
 import pygal
+import json
 app = Flask(__name__)
 
 # -----------------------------------------
@@ -16,9 +17,12 @@ def home():
 
 @app.route("/bar")
 def chart():
+    with open('bar.json','r') as bar_file:
+        data = json.load(bar_file)
+    mark_list = [x['mark'] for x in data]
     chart = pygal.Bar()
-    chart.add('Annual Mark List',[])
-    chart.render_to_file('static/images/bar_chart.svg')
+    chart.add('Annual Mark List',mark_list)
+    chart.render_to_file('static/images/ba_chart.svg')
     return render_template('app.html')
 
 #

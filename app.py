@@ -1,6 +1,7 @@
 from flask import Flask,render_template
 import pygal
 import json
+import time
 app = Flask(__name__)
 
 # -----------------------------------------
@@ -16,25 +17,16 @@ def home():
 # -------------------------------------------
 
 @app.route("/bar")
-def chart():
+def bar():
     with open('bar.json','r') as bar_file:
         data = json.load(bar_file)
     mark_list = [x['mark'] for x in data]
     chart = pygal.Bar()
     chart.add('Annual Mark List',mark_list)
-    chart.render_to_file('static/images/ba_chart.svg')
-    return render_template('app.html')
-
-#
-# Utility to fetch JSON annual marks from API
-# and convert the data to a Python list
-#
-def GetAnnualMarkList():
-    print 'hello'
-
+    chart.x_labels = [x['year'] for x in data]
+    chart.render_to_file('static/images/bar_chart.svg')
+    img_url = 'static/images/bar_chart.svg?cache=' + str(time.time())
+    return render_template('app.html',image_url = img_url)
 
 if __name__=="__main__":
     app.run()
-
-
-
